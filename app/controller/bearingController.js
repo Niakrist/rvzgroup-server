@@ -152,7 +152,20 @@ class BearingController {
   }
   async getOneBearing(req, res) {}
   async editOneBearing(req, res) {}
-  async deleteOneBearing(req, res) {}
+  async deleteOneBearing(req, res) {
+    try {
+      const { id } = req.body;
+      const bearing = await Bearing.destroy({ where: { id } });
+
+      return res.json(bearing);
+    } catch (error) {
+      console.log(error);
+
+      return res
+        .status(500)
+        .json({ message: "Ошибка при удалении подшипника!" });
+    }
+  }
 }
 
 export default new BearingController();
