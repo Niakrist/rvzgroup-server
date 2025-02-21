@@ -6,6 +6,7 @@ router.post("/", bearingController.createBearing);
 router.get("/", bearingController.getAllBearing);
 router.get("/:url", bearingController.getOneBearing);
 router.put("/", bearingController.editOneBearing);
+router.delete("/", bearingController.deleteOneBearing);
 
 export default router;
 
@@ -13,10 +14,10 @@ export default router;
   const swag = {
     id1c: "п1",
     id1cRvz: "п2",
-    price: "10",
-    priceRvz: "20",
-    quantity: "100",
-    quantityRvz: "5",
+    price: 10,
+    priceRvz: 20,
+    quantity: 100,
+    quantityRvz: 5,
     name: "106",
     url: "/gost-106",
     title: "Подшипник 106",
@@ -27,9 +28,9 @@ export default router;
     analogUrl: "/iso-6006",
     images: "",
     content: "Подшипник РВЗ 106 - описание текст",
-    innerDiameter: "10",
-    outerDiameter: "15",
-    width: "20",
+    innerDiameter: 10,
+    outerDiameter: 15,
+    width: 20,
     newBearing: false,
     stockBearing: 500,
     popularBearing: true,

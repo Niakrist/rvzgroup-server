@@ -10,12 +10,12 @@ const User = sequelize.define("user", {
 
 const Bearing = sequelize.define("bearing", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  id1c: { type: DataTypes.STRING, unique: true },
-  id1cRvz: { type: DataTypes.STRING, unique: true },
-  price: { type: DataTypes.INTEGER },
-  priceRvz: { type: DataTypes.INTEGER },
-  quantity: { type: DataTypes.INTEGER },
-  quantityRvz: { type: DataTypes.INTEGER },
+  id1c: { type: DataTypes.STRING, unique: true, allowNull: true },
+  id1cRvz: { type: DataTypes.STRING, unique: true, allowNull: true },
+  price: { type: DataTypes.INTEGER, allowNull: true },
+  priceRvz: { type: DataTypes.INTEGER, allowNull: true },
+  quantity: { type: DataTypes.INTEGER, allowNull: true },
+  quantityRvz: { type: DataTypes.INTEGER, allowNull: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
   url: { type: DataTypes.STRING, unique: true, allowNull: false },
   title: { type: DataTypes.STRING, unique: true, allowNull: false },

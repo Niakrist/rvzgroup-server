@@ -1,4 +1,11 @@
+import { v4 } from "uuid";
+
+import { fileURLToPath } from "url";
+import path, { dirname } from "path";
+
 import { Bearing, BearingInfo } from "../models/models.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 class BearingController {
   async createBearing(req, res) {
@@ -16,6 +23,7 @@ class BearingController {
         h1,
         description,
         brand,
+        standart,
         analog,
         analogUrl,
         content,
@@ -34,12 +42,9 @@ class BearingController {
         info,
       } = req.body;
 
-      console.log("req: ", req.body);
+      const { images } = req.files;
 
-      // const { images } = req.files;
-      // let fileName = uuid.v4() + ".jpg";
-      // images.mv(path.resolve(__dirname, "..", "static", fileName));
-
+      let fileName = v4() + ".jpg";
       const bearing = await Bearing.create({
         id1c,
         id1cRvz,
@@ -53,6 +58,7 @@ class BearingController {
         h1,
         description,
         brand,
+        standart,
         analog,
         analogUrl,
         content,
@@ -68,7 +74,7 @@ class BearingController {
         loadId,
         rowId,
         openId,
-        images: "123",
+        images: fileName,
       });
 
       if (info) {
@@ -83,14 +89,70 @@ class BearingController {
           })
         );
       }
+      images.mv(path.resolve(__dirname, "..", "static", fileName));
       return res.json(bearing);
     } catch (error) {
-      console.log(error);
+      if (error.name === "SequelizeUniqueConstraintError") {
+        const uniqueField = error.parent.detail;
+        return res.json({
+          message: `Поле "${uniqueField}" должно быть уникальным. Указанное значение уже существует.`,
+        });
+      } else {
+        console.log(error);
+        return res.status(500).json({
+          message: "Произошла ошибка при создании записи",
+          error: error.message,
+        });
+      }
     }
   }
-  async getAllBearing(req, res) {}
+  async getAllBearing(req, res) {
+    try {
+      let { standartId, bodyId, formaId, loadId, rowId, openId, limit, page } =
+        req.query;
+
+      page = page || 1;
+      limit = limit || 16;
+
+      let offset = page * limit - limit;
+
+      const whereClause = {};
+
+      if (standartId) {
+        whereClause.standartId = standartId;
+      }
+      if (bodyId) {
+        whereClause.bodyId = bodyId;
+      }
+      if (formaId) {
+        whereClause.formaId = formaId;
+      }
+      if (loadId) {
+        whereClause.loadId = loadId;
+      }
+      if (rowId) {
+        whereClause.rowId = rowId;
+      }
+      if (openId) {
+        whereClause.openId = openId;
+      }
+
+      const bearings = await Bearing.findAndCountAll({
+        where: whereClause,
+        limit,
+        offset,
+      });
+
+      return res.json(bearings);
+    } catch (error) {
+      console.log(error);
+
+      return res.status(500).json({ message: "Ошибка при поиске устройств" });
+    }
+  }
   async getOneBearing(req, res) {}
   async editOneBearing(req, res) {}
+  async deleteOneBearing(req, res) {}
 }
 
 export default new BearingController();
