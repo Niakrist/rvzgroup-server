@@ -3,7 +3,7 @@ import { Forma } from "../models/models.js";
 class FormaController {
   async createForma(req, res) {
     try {
-      const { name, title, description, h1, url } = req.forma;
+      const { name, title, description, h1, url } = req.body;
       const isHaveForma = await Forma.findOne({ where: { name } });
       if (isHaveForma) {
         return res
