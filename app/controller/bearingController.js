@@ -147,10 +147,23 @@ class BearingController {
     } catch (error) {
       console.log(error);
 
-      return res.status(500).json({ message: "Ошибка при поиске устройств" });
+      return res.status(500).json({ message: "Ошибка при поиске подшипника" });
     }
   }
-  async getOneBearing(req, res) {}
+  async getOneBearing(req, res) {
+    try {
+      const { url } = req.params;
+      console.log("url: ", url);
+      const bearing = await Bearing.findOne({ where: { url } });
+
+      if (!bearing) {
+        return res.status(404).json({ message: `Страница ${url} не найдена` });
+      }
+      return res.json(bearing);
+    } catch (error) {
+      return res.status(500).json({ message: "Ошибка при поиске подшипника" });
+    }
+  }
   async editOneBearing(req, res) {}
   async deleteOneBearing(req, res) {
     try {
