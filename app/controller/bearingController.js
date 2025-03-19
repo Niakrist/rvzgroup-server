@@ -8,108 +8,108 @@ import { Bearing, BearingInfo } from "../models/models.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 class BearingController {
-  async createBearing(req, res) {
-    try {
-      let {
-        id1c,
-        id1cRvz,
-        price,
-        priceRvz,
-        quantity,
-        quantityRvz,
-        name,
-        url,
-        title,
-        h1,
-        description,
-        brand,
-        standart,
-        analog,
-        analogUrl,
-        content,
-        innerDiameter,
-        outerDiameter,
-        width,
-        newBearing,
-        stockBearing,
-        popularBearing,
-        standartId,
-        bodyId,
-        formaId,
-        loadId,
-        rowId,
-        openId,
-        info,
-      } = req.body;
+  // async createBearing(req, res) {
+  //   try {
+  //     let {
+  //       id1c,
+  //       id1cRvz,
+  //       price,
+  //       priceRvz,
+  //       quantity,
+  //       quantityRvz,
+  //       name,
+  //       url,
+  //       title,
+  //       h1,
+  //       description,
+  //       brand,
+  //       standart,
+  //       analog,
+  //       analogUrl,
+  //       content,
+  //       innerDiameter,
+  //       outerDiameter,
+  //       width,
+  //       newBearing,
+  //       stockBearing,
+  //       popularBearing,
+  //       standartId,
+  //       bodyId,
+  //       formaId,
+  //       loadId,
+  //       rowId,
+  //       openId,
+  //       info,
+  //     } = req.body;
 
-      const { images } = req.files;
+  //     const { images } = req.files;
 
-      let fileName = v4() + ".jpg";
-      const bearing = await Bearing.create({
-        id1c,
-        id1cRvz,
-        price,
-        priceRvz,
-        quantity,
-        quantityRvz,
-        name,
-        url,
-        title,
-        h1,
-        description,
-        brand,
-        standart,
-        analog,
-        analogUrl,
-        content,
-        innerDiameter,
-        outerDiameter,
-        width,
-        newBearing,
-        stockBearing,
-        popularBearing,
-        standartId,
-        bodyId,
-        formaId,
-        loadId,
-        rowId,
-        openId,
-        images: fileName,
-      });
+  //     let fileName = v4() + ".jpg";
+  //     const bearing = await Bearing.create({
+  //       id1c,
+  //       id1cRvz,
+  //       price,
+  //       priceRvz,
+  //       quantity,
+  //       quantityRvz,
+  //       name,
+  //       url,
+  //       title,
+  //       h1,
+  //       description,
+  //       brand,
+  //       standart,
+  //       analog,
+  //       analogUrl,
+  //       content,
+  //       innerDiameter,
+  //       outerDiameter,
+  //       width,
+  //       newBearing,
+  //       stockBearing,
+  //       popularBearing,
+  //       standartId,
+  //       bodyId,
+  //       formaId,
+  //       loadId,
+  //       rowId,
+  //       openId,
+  //       images: fileName,
+  //     });
 
-      if (info) {
-        info = JSON.parse(info);
-        await Promise.all(
-          info.map(async (i) => {
-            return await BearingInfo.create({
-              title: i.title,
-              description: i.description,
-              deviceId: bearing.id,
-            });
-          })
-        );
-      }
-      images.mv(path.resolve(__dirname, "..", "static", fileName));
-      return res.json(bearing);
-    } catch (error) {
-      if (error.name === "SequelizeUniqueConstraintError") {
-        const uniqueField = error.parent.detail;
-        return res.json({
-          message: `Поле "${uniqueField}" должно быть уникальным. Указанное значение уже существует.`,
-        });
-      } else {
-        console.log(error);
-        return res.status(500).json({
-          message: "Произошла ошибка при создании записи",
-          error: error.message,
-        });
-      }
-    }
-  }
+  //     if (info) {
+  //       info = JSON.parse(info);
+  //       await Promise.all(
+  //         info.map(async (i) => {
+  //           return await BearingInfo.create({
+  //             title: i.title,
+  //             description: i.description,
+  //             deviceId: bearing.id,
+  //           });
+  //         })
+  //       );
+  //     }
+  //     images.mv(path.resolve(__dirname, "..", "static", fileName));
+  //     return res.json(bearing);
+  //   } catch (error) {
+  //     if (error.name === "SequelizeUniqueConstraintError") {
+  //       const uniqueField = error.parent.detail;
+  //       return res.json({
+  //         message: `Поле "${uniqueField}" должно быть уникальным. Указанное значение уже существует.`,
+  //       });
+  //     } else {
+  //       console.log(error);
+  //       return res.status(500).json({
+  //         message: "Произошла ошибка при создании записи",
+  //         error: error.message,
+  //       });
+  //     }
+  //   }
+  // }
   async getAllBearing(req, res) {
     try {
       let { standartId, bodyId, formaId, loadId, rowId, openId, limit, page } =
-        req.query;
+        req.body;
 
       page = page || 1;
       limit = limit || 16;

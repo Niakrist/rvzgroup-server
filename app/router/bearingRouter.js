@@ -2,8 +2,8 @@ import { Router } from "express";
 import bearingController from "../controller/bearingController.js";
 const router = new Router();
 
-router.post("/", bearingController.createBearing);
-router.get("/", bearingController.getAllBearing);
+// router.post("/", bearingController.createBearing);
+router.post("/", bearingController.getAllBearing);
 router.get("/:url", bearingController.getOneBearing);
 router.put("/", bearingController.editOneBearing);
 router.delete("/", bearingController.deleteOneBearing);
