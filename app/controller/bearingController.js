@@ -164,6 +164,52 @@ class BearingController {
       return res.status(500).json({ message: "Ошибка при поиске подшипника" });
     }
   }
+
+  async getBearingByQuery(req, res) {
+    try {
+      let { standartId, bodyId, formaId, loadId, rowId, openId, limit, page } =
+        req.query;
+
+      page = page || 1;
+      limit = limit || 16;
+
+      let offset = page * limit - limit;
+
+      const whereClause = {};
+
+      if (standartId) {
+        whereClause.standartId = standartId;
+      }
+      if (bodyId) {
+        whereClause.bodyId = bodyId;
+      }
+      if (formaId) {
+        whereClause.formaId = formaId;
+      }
+      if (loadId) {
+        whereClause.loadId = loadId;
+      }
+      if (rowId) {
+        whereClause.rowId = rowId;
+      }
+      if (openId) {
+        whereClause.openId = openId;
+      }
+
+      const bearings = await Bearing.findAndCountAll({
+        where: whereClause,
+        limit,
+        offset,
+      });
+
+      return res.json(bearings);
+    } catch (error) {
+      console.log(error);
+
+      return res.status(500).json({ message: "Ошибка при поиске подшипника" });
+    }
+  }
+
   async editOneBearing(req, res) {}
   async deleteOneBearing(req, res) {
     try {

@@ -4,6 +4,7 @@ const router = new Router();
 
 // router.post("/", bearingController.createBearing);
 router.post("/", bearingController.getAllBearing);
+router.get("/", bearingController.getBearingByQuery);
 router.get("/:url", bearingController.getOneBearing);
 router.put("/", bearingController.editOneBearing);
 router.delete("/", bearingController.deleteOneBearing);
