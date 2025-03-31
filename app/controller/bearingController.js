@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import path, { dirname } from "path";
 
 import { Bearing, BearingInfo } from "../models/models.js";
+import { Op } from "sequelize";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -119,22 +120,28 @@ class BearingController {
       const whereClause = {};
 
       if (standartId) {
-        whereClause.standartId = standartId;
+        const standartIds = standartId.split("|");
+        whereClause.standartId = { [Op.in]: standartIds }; // Используем Op.in для множественных значений
       }
       if (bodyId) {
-        whereClause.bodyId = bodyId;
+        const bodyIds = bodyId.split("|");
+        whereClause.bodyId = { [Op.in]: bodyIds };
       }
       if (formaId) {
-        whereClause.formaId = formaId;
+        const formaIds = formaId.split("|");
+        whereClause.formaId = { [Op.in]: formaIds };
       }
       if (loadId) {
-        whereClause.loadId = loadId;
+        const loadIds = loadId.split("|");
+        whereClause.loadId = { [Op.in]: loadIds };
       }
       if (rowId) {
-        whereClause.rowId = rowId;
+        const rowIds = rowId.split("|");
+        whereClause.rowId = { [Op.in]: rowIds };
       }
       if (openId) {
-        whereClause.openId = openId;
+        const openIds = openId.split("|");
+        whereClause.openId = { [Op.in]: openIds };
       }
 
       const bearings = await Bearing.findAndCountAll({
@@ -178,22 +185,28 @@ class BearingController {
       const whereClause = {};
 
       if (standartId) {
-        whereClause.standartId = standartId;
+        const standartIds = standartId.split("|");
+        whereClause.standartId = { [Op.in]: standartIds }; // Используем Op.in для множественных значений
       }
       if (bodyId) {
-        whereClause.bodyId = bodyId;
+        const bodyIds = bodyId.split("|");
+        whereClause.bodyId = { [Op.in]: bodyIds };
       }
       if (formaId) {
-        whereClause.formaId = formaId;
+        const formaIds = formaId.split("|");
+        whereClause.formaId = { [Op.in]: formaIds };
       }
       if (loadId) {
-        whereClause.loadId = loadId;
+        const loadIds = loadId.split("|");
+        whereClause.loadId = { [Op.in]: loadIds };
       }
       if (rowId) {
-        whereClause.rowId = rowId;
+        const rowIds = rowId.split("|");
+        whereClause.rowId = { [Op.in]: rowIds };
       }
       if (openId) {
-        whereClause.openId = openId;
+        const openIds = openId.split("|");
+        whereClause.openId = { [Op.in]: openIds };
       }
 
       const bearings = await Bearing.findAndCountAll({
