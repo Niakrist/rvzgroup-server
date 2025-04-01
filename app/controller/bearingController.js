@@ -109,8 +109,24 @@ class BearingController {
   // }
   async getAllBearing(req, res) {
     try {
-      let { standartId, bodyId, formaId, loadId, rowId, openId, limit, page } =
-        req.body;
+      let {
+        standartId,
+        bodyId,
+        formaId,
+        loadId,
+        rowId,
+        openId,
+        limit,
+        page,
+        minInnerDiameter,
+        maxInnerDiameter,
+        minOuterDiameter,
+        maxOuterDiameter,
+        minWidth,
+        maxWidth,
+        minPrice,
+        maxPrice,
+      } = req.body;
 
       page = page || 1;
       limit = limit || 16;
@@ -142,6 +158,58 @@ class BearingController {
       if (openId) {
         const openIds = openId.split("|");
         whereClause.openId = { [Op.in]: openIds };
+      }
+
+      if (minInnerDiameter || maxInnerDiameter) {
+        whereClause.innerDiameter = {};
+        if (minInnerDiameter && !maxInnerDiameter) {
+          whereClause.innerDiameter[Op.gte] = Number(minInnerDiameter);
+        } else if (!minInnerDiameter && maxInnerDiameter) {
+          whereClause.innerDiameter[Op.lte] = Number(maxInnerDiameter);
+        } else if (minInnerDiameter && maxInnerDiameter) {
+          whereClause.innerDiameter[Op.between] = [
+            Number(minInnerDiameter),
+            Number(maxInnerDiameter),
+          ];
+        }
+      }
+
+      if (minOuterDiameter || maxOuterDiameter) {
+        whereClause.outerDiameter = {};
+        if (minOuterDiameter && !maxOuterDiameter) {
+          whereClause.outerDiameter[Op.gte] = Number(minOuterDiameter);
+        } else if (!minOuterDiameter && maxOuterDiameter) {
+          whereClause.outerDiameter[Op.lte] = Number(maxOuterDiameter);
+        } else if (minOuterDiameter && maxOuterDiameter) {
+          whereClause.outerDiameter[Op.between] = [
+            Number(minOuterDiameter),
+            Number(maxOuterDiameter),
+          ];
+        }
+      }
+
+      if (minWidth || maxWidth) {
+        whereClause.width = {};
+        if (minWidth && !maxWidth) {
+          whereClause.width[Op.gte] = Number(minWidth);
+        } else if (!minWidth && maxWidth) {
+          whereClause.width[Op.lte] = Number(maxWidth);
+        } else if (minWidth && maxWidth) {
+          whereClause.width[Op.between] = [Number(minWidth), Number(maxWidth)];
+        }
+      }
+
+      if (minPrice || maxPrice) {
+        whereClause.price = {};
+        // whereClause.priceRvz = {}
+
+        if (minPrice && !maxPrice) {
+          whereClause.price[Op.gte] = Number(minPrice);
+        } else if (!minPrice && maxPrice) {
+          whereClause.price[Op.lte] = Number(maxPrice);
+        } else if (minPrice && maxPrice) {
+          whereClause.price[Op.between] = [Number(minPrice), Number(maxPrice)];
+        }
       }
 
       const bearings = await Bearing.findAndCountAll({
@@ -160,7 +228,6 @@ class BearingController {
   async getOneBearing(req, res) {
     try {
       const { url } = req.params;
-      console.log("url: ", url);
       const bearing = await Bearing.findOne({ where: { url } });
 
       if (!bearing) {
@@ -174,8 +241,20 @@ class BearingController {
 
   async getBearingByQuery(req, res) {
     try {
-      let { standartId, bodyId, formaId, loadId, rowId, openId, limit, page } =
-        req.query;
+      let {
+        standartId,
+        bodyId,
+        formaId,
+        loadId,
+        rowId,
+        openId,
+        limit,
+        page,
+        minInnerDiameter,
+        maxInnerDiameter,
+        minPrice,
+        maxPrice,
+      } = req.query;
 
       page = page || 1;
       limit = limit || 16;
@@ -207,6 +286,34 @@ class BearingController {
       if (openId) {
         const openIds = openId.split("|");
         whereClause.openId = { [Op.in]: openIds };
+      }
+      if (minInnerDiameter || maxInnerDiameter) {
+        whereClause.innerDiameter = {};
+
+        if (minInnerDiameter && !maxInnerDiameter) {
+          whereClause.innerDiameter[Op.gte] =
+            innerDiameter > Number(minInnerDiameter);
+        } else if (!minInnerDiameter && maxInnerDiameter) {
+          whereClause.innerDiameter[Op.lte] = Number(maxInnerDiameter);
+        } else if (minInnerDiameter && maxInnerDiameter) {
+          whereClause.innerDiameter[Op.between] = [
+            Number(minInnerDiameter),
+            Number(maxInnerDiameter),
+          ];
+        }
+      }
+
+      if (minPrice || maxPrice) {
+        whereClause.price = {};
+        // whereClause.priceRvz = {}
+
+        if (minPrice && !maxPrice) {
+          whereClause.price[Op.gte] = Number(minPrice);
+        } else if (!minPrice && maxPrice) {
+          whereClause.price[Op.lte] = Number(maxPrice);
+        } else if (minPrice && maxPrice) {
+          whereClause.price[Op.between] = [Number(minPrice), Number(maxPrice)];
+        }
       }
 
       const bearings = await Bearing.findAndCountAll({
