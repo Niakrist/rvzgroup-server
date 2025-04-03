@@ -291,8 +291,7 @@ class BearingController {
         whereClause.innerDiameter = {};
 
         if (minInnerDiameter && !maxInnerDiameter) {
-          whereClause.innerDiameter[Op.gte] =
-            innerDiameter > Number(minInnerDiameter);
+          whereClause.innerDiameter[Op.gte] = Number(minInnerDiameter);
         } else if (!minInnerDiameter && maxInnerDiameter) {
           whereClause.innerDiameter[Op.lte] = Number(maxInnerDiameter);
         } else if (minInnerDiameter && maxInnerDiameter) {
