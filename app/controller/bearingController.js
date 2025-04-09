@@ -129,7 +129,7 @@ class BearingController {
       } = req.body;
 
       page = page || 1;
-      limit = limit || 16;
+      limit = limit || 12;
 
       let offset = page * limit - limit;
 
