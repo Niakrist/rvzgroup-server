@@ -3,6 +3,7 @@ import bearingController from "../controller/bearingController.js";
 const router = new Router();
 
 // router.post("/", bearingController.createBearing);
+router.post("/search", bearingController.searchBearings);
 router.post("/", bearingController.getAllBearing);
 router.get("/", bearingController.getBearingByQuery);
 router.get("/:url", bearingController.getOneBearing);

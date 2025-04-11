@@ -252,12 +252,17 @@ class BearingController {
         page,
         minInnerDiameter,
         maxInnerDiameter,
+        minOuterDiameter,
+        maxOuterDiameter,
+        minWidth,
+        maxWidth,
         minPrice,
         maxPrice,
+        searchTerm,
       } = req.query;
 
       page = page || 1;
-      limit = limit || 16;
+      limit = limit || 12;
 
       let offset = page * limit - limit;
 
@@ -287,6 +292,25 @@ class BearingController {
         const openIds = openId.split("|");
         whereClause.openId = { [Op.in]: openIds };
       }
+
+      // if (searchTerm) {
+      //   whereClause.searchTerm = {
+      //     [Op.or]: [
+      //       { title: { [Op.iLike]: `%${searchTerm}%` } },
+      //       { description: { [Op.iLike]: `%${searchTerm}%` } },
+      //       { content: { [Op.iLike]: `%${searchTerm}%` } },
+      //     ],
+      //   };
+      // }
+
+      if (searchTerm) {
+        whereClause[Op.or] = [
+          { title: { [Op.iLike]: `%${searchTerm}%` } },
+          { description: { [Op.iLike]: `%${searchTerm}%` } },
+          { content: { [Op.iLike]: `%${searchTerm}%` } },
+        ];
+      }
+
       if (minInnerDiameter || maxInnerDiameter) {
         whereClause.innerDiameter = {};
 
@@ -299,6 +323,31 @@ class BearingController {
             Number(minInnerDiameter),
             Number(maxInnerDiameter),
           ];
+        }
+      }
+
+      if (minOuterDiameter || maxOuterDiameter) {
+        whereClause.outerDiameter = {};
+        if (minOuterDiameter && !maxOuterDiameter) {
+          whereClause.outerDiameter[Op.gte] = Number(minOuterDiameter);
+        } else if (!minOuterDiameter && maxOuterDiameter) {
+          whereClause.outerDiameter[Op.lte] = Number(maxOuterDiameter);
+        } else if (minOuterDiameter && maxOuterDiameter) {
+          whereClause.outerDiameter[Op.between] = [
+            Number(minOuterDiameter),
+            Number(maxOuterDiameter),
+          ];
+        }
+      }
+
+      if (minWidth || maxWidth) {
+        whereClause.width = {};
+        if (minWidth && !maxWidth) {
+          whereClause.width[Op.gte] = Number(minWidth);
+        } else if (!minWidth && maxWidth) {
+          whereClause.width[Op.lte] = Number(maxWidth);
+        } else if (minWidth && maxWidth) {
+          whereClause.width[Op.between] = [Number(minWidth), Number(maxWidth)];
         }
       }
 
@@ -328,7 +377,31 @@ class BearingController {
       return res.status(500).json({ message: "Ошибка при поиске подшипника" });
     }
   }
+  async searchBearings(req, res) {
+    try {
+      const { q } = req.body;
+      const whereClause = {
+        [Op.or]: [
+          { name: { [Op.iLike]: `%${q}%` } },
+          { title: { [Op.iLike]: `%${q}%` } },
+          { description: { [Op.iLike]: `%${q}%` } },
+          { content: { [Op.iLike]: `%${q}%` } },
+        ],
+      };
 
+      // Добавьте другие параметры фильтрации из otherParams
+
+      const bearings = await Bearing.findAll({
+        where: whereClause,
+        limit: 10, // Ограничение для выпадающего списка
+      });
+
+      return res.json({ rows: bearings, count: bearings.length });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Ошибка при поиске" });
+    }
+  }
   async editOneBearing(req, res) {}
   async deleteOneBearing(req, res) {
     try {
